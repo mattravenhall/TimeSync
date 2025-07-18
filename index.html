@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Timezone Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="map"></div>
+    <div id="location-manager-container">
+        <button id="location-list-toggle">📌</button>
+        <div id="location-list-content" class="hidden">
+            <div id="location-controls">
+                <div id="add-location-container">
+                    <input type="text" id="city-input" placeholder="Enter a city name">
+                    <input type="color" id="color-input" value="#ff0000">
+                    <button id="add-location-btn">Add</button>
+                </div>
+                <button id="tz-toggle">Show My Location</button>
+            </div>
+            <div id="location-management-buttons">
+                <button id="import-locations-btn">Import</button>
+                <button id="export-locations-btn">Export</button>
+                <input type="file" id="import-locations-input" accept=".json" style="display: none;">
+                <button id="reset-locations-btn">Reset</button>
+            </div>
+            <h2>Locations</h2>
+            <ul id="location-list"></ul>
+        </div>
+    </div>
+
+    <div id="placeholder-container">
+        <button id="placeholder-toggle">ℹ️</button>
+        <div id="placeholder-content" class="hidden">
+            <h3>Future Links & Info</h3>
+            <p>This is a placeholder for future content.</p>
+        </div>
+    </div>
+
+    <div id="config-container">
+        <button id="config-toggle">⚙️</button>
+        <div id="config-content" class="hidden">
+            <button id="theme-toggle">⚫</button>
+            <button id="daylight-toggle">☀️</button>
+            <button id="toggle-countries-btn">🗺️</button>
+            
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
