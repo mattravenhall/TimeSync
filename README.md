@@ -1,10 +1,6 @@
-# TimeSync
-> View custom world times all in one place
+![TimeSync Logo](title.png)
 
 [**View Now**](https://mattravenhall.github.io/TimeSync/)
-
-This was vibe-coded in a couple hours because all the online world time maps weren't quite what I wanted.
-It's definitely a bit rough around the edges, so expect some polish in the future.
 
 ## Features
 - Add/remove/hide locations
@@ -12,3 +8,7 @@ It's definitely a bit rough around the edges, so expect some polish in the futur
 - Import/export locations
 - Dark/Light mode
 - Show/hide daylight
+
+## Disclaimer
+This was initially vibe-coded in a couple hours because I couldn't find a minimalist customisable time zone map.
+It's definitely a bit rough around the edges, but you can expect some human-coded polish in the future.
