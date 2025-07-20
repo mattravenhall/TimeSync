@@ -31,17 +31,17 @@
         </div>
     </div>
 
-    <div id="placeholder-container">
-        <button id="placeholder-toggle">ℹ️</button>
-        <div id="placeholder-content" class="hidden">
+    <div id="placeholder-container" class="ui-container">
+        <button id="placeholder-toggle" class="ui-toggle">ℹ️</button>
+        <div id="placeholder-content" class="content-panel hidden">
             <h3>Future Links & Info</h3>
             <p>This is a placeholder for future content.</p>
         </div>
     </div>
 
-    <div id="config-container">
-        <button id="config-toggle">⚙️</button>
-        <div id="config-content" class="hidden">
+    <div id="config-container" class="ui-container">
+        <button id="config-toggle" class="ui-toggle">⚙️</button>
+        <div id="config-content" class="content-panel hidden">
             <button id="theme-toggle">⚫</button>
             <button id="daylight-toggle">☀️</button>
             <button id="toggle-countries-btn">🗺️</button>
@@ -49,9 +49,13 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
-    <script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js" defer></script>
+    <script src="js/daylight.js" defer></script>
+    <script src="js/locations.js" defer></script>
+    <script src="js/map.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>
