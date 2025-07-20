@@ -23,10 +23,10 @@ themeToggle.addEventListener('click', () => {
     if (document.body.classList.contains('light-mode')) {
         map.removeLayer(darkTiles);
         lightTiles.addTo(map);
-        themeToggle.innerHTML = '⚪';
+        themeToggle.innerHTML = '⚫';
     } else {
         map.removeLayer(lightTiles);
         darkTiles.addTo(map);
-        themeToggle.innerHTML = '⚫';
+        themeToggle.innerHTML = '⚪';
     }
 });

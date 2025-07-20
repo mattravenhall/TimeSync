@@ -157,10 +157,10 @@ daylightToggle.addEventListener('click', () => {
     if (isDaylightVisible) {
         updateDaylightOverlay();
         daylightOverlay.addTo(map);
-        daylightToggle.innerHTML = '🌙';
+        // daylightToggle.innerHTML = '🌙';
     } else {
         map.removeLayer(daylightOverlay);
-        daylightToggle.innerHTML = '☀️';
+        // daylightToggle.innerHTML = '☀️';
     }
 });
 
