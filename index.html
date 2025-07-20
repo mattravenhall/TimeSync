@@ -10,41 +10,50 @@
 <body>
     <div id="map"></div>
     <div id="location-manager-container" class="ui-container">
-        <button id="location-list-toggle" class="ui-toggle">📌</button>
+        <button id="location-list-toggle" class="ui-toggle" title="Locations">📌</button>
         <div id="location-list-content" class="content-panel hidden">
+            <h2>Locations</h2>
             <div id="location-controls">
                 <div id="add-location-container">
                     <input type="text" id="city-input" placeholder="Enter a city name">
                     <input type="color" id="color-input" value="#ff0000">
-                    <button id="add-location-btn">Add</button>
+                    <button id="add-location-btn" title="Add City to Map">Add</button>
                 </div>
-                <button id="tz-toggle">Show My Location</button>
+                <button id="tz-toggle" title="Show/Hide Your Current Location">Show My Location</button>
             </div>
             <div id="location-management-buttons">
-                <button id="import-locations-btn">Import</button>
-                <button id="export-locations-btn">Export</button>
+                <button id="import-locations-btn" title="Import Locations File">Import</button>
+                <button id="export-locations-btn" title="Export Locations File">Export</button>
                 <input type="file" id="import-locations-input" accept=".json" style="display: none;">
-                <button id="reset-locations-btn">Reset</button>
+                <button id="reset-locations-btn" title="Reset Locations to defaults">Reset</button>
             </div>
-            <h2>Locations</h2>
+            <h2>Markers</h2>
             <ul id="location-list"></ul>
         </div>
     </div>
 
-    <div id="placeholder-container" class="ui-container">
-        <button id="placeholder-toggle" class="ui-toggle">ℹ️</button>
-        <div id="placeholder-content" class="content-panel hidden">
-            <h3>Future Links & Info</h3>
-            <p>This is a placeholder for future content.</p>
+    <div id="information-container" class="ui-container">
+        <button id="information-toggle" class="ui-toggle" title="Information">ℹ️</button>
+        <div id="information-content" class="content-panel hidden">
+            <img src="title_slim.png" class="image-title"/>
+            <p>
+                <a href="https://github.com/mattravenhall/TimeSync">
+                    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/mattravenhall/TimeSync" style="display:block; margin-left: auto; margin-right: auto;">
+                </a>
+            </p>
+            <p id="commit-id-display" style="text-align: center; opacity: 0.3; font-size: 80%;">
+                Checking version...
+            </p>
         </div>
     </div>
 
     <div id="config-container" class="ui-container">
-        <button id="config-toggle" class="ui-toggle">⚙️</button>
+        <button id="config-toggle" class="ui-toggle" title="Configure">⚙️</button>
         <div id="config-content" class="content-panel hidden">
-            <button id="theme-toggle">⚪</button>
-            <button id="daylight-toggle">☀️</button>
-            <button id="toggle-countries-btn">🗺️</button>
+            <h2>Configuration</h2>
+            <button id="theme-toggle" title="Toggle Light/Dark Mode">⚪</button>
+            <button id="daylight-toggle" title="Show/Hide Daylight">☀️</button>
+            <button id="toggle-countries-btn" title="Show/Hide Country Flags">🗺️</button>
             
         </div>
     </div>

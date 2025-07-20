@@ -182,7 +182,7 @@ body.light-mode .leaflet-control-zoom .leaflet-disabled:hover {
     align-items: flex-start;
 }
 
-#placeholder-container {
+#information-container {
     bottom: var(--spacing-unit);
     right: var(--spacing-unit);
     align-items: flex-end;
@@ -225,6 +225,12 @@ body.light-mode .leaflet-control-zoom .leaflet-disabled:hover {
   ========================================
 */
 #location-list-content h2 {
+    margin: 10px 0;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+#config-content h2 {
     margin: 10px 0;
     text-align: center;
     font-size: 1.1em;
@@ -422,4 +428,11 @@ body.light-mode .location-item .controls button.reset-label:hover {
 */
 .hidden {
     display: none;
+}
+
+/* Images */
+.image-title {
+    display: block;
+    margin: auto;
+    width: 100%;
 }

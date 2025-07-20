@@ -125,13 +125,13 @@ locationList.addEventListener('input', (e) => {
 
 addLocationBtn.addEventListener('click', geocodeAndAddLocation);
 
-const placeholderToggle = document.getElementById('placeholder-toggle');
-const placeholderContent = document.getElementById('placeholder-content');
+const informationToggle = document.getElementById('information-toggle');
+const informationContent = document.getElementById('information-content');
 const locationListToggle = document.getElementById('location-list-toggle');
 const locationListContent = document.getElementById('location-list-content');
 
-placeholderToggle.addEventListener('click', () => {
-    placeholderContent.classList.toggle('hidden');
+informationToggle.addEventListener('click', () => {
+    informationContent.classList.toggle('hidden');
 });
 
 locationListToggle.addEventListener('click', () => {
@@ -197,4 +197,28 @@ resetLocationsBtn.addEventListener('click', () => {
     renderLocationList();
     updateTimes();
     saveLocations(); // Save the reset state
+});
+
+/* Utilise latest repo commit as our id */
+async function getLatestCommitId(owner, repo) {
+    const url = `https://api.github.com/repos/mattravenhall/TimeSync/commits?per_page=1`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data && data.length > 0) {
+            return data[0].sha;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error fetching version:", error);
+        return null;
+    }
+}
+
+getLatestCommitId().then(commitId => {
+    if (commitId) {
+        document.getElementById('commit-id-display').textContent = `v${commitId.substring(0, 7)}`;
+    } else {
+        document.getElementById('commit-id-display').textContent = 'latest';
+    }
 });
