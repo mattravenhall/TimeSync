@@ -1,9 +1,15 @@
+/*
+  ========================================
+  CSS Variables for Theming and Layout
+  ========================================
+*/
 :root {
-    --primary-bg-color: #121212;
+    /* Color Palette */
+    --primary-bg-color: #262626;
     --primary-text-color: #ffffff;
     --secondary-bg-color: #2a2a2a;
     --secondary-text-color: #333333;
-    --light-bg-color: #f0f0f0;
+    --light-bg-color: #a6c5d4;
     --light-text-color: #333333;
     --light-secondary-bg-color: #e0e0e0;
     --light-border-color: #cccccc;
@@ -19,9 +25,16 @@
     --danger-light-bg-color: #ffcccc;
     --danger-light-border-color: #ff9999;
     --danger-light-text-color: #cc0000;
+
+    /* Spacing and Sizing */
     --spacing-unit: 10px;
 }
 
+/*
+  ========================================
+  Base Styles
+  ========================================
+*/
 html, body {
     height: 100%;
     margin: 0;
@@ -32,6 +45,16 @@ html, body {
     color: var(--primary-text-color);
 }
 
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+/*
+  ========================================
+  Light Mode Theme
+  ========================================
+*/
 body.light-mode {
     background-color: var(--light-bg-color);
     color: var(--light-text-color);
@@ -48,78 +71,26 @@ body.light-mode button:hover {
     background-color: #d0d0d0;
 }
 
-#location-management-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: var(--spacing-unit);
-    margin-top: 15px;
-}
-
-#location-management-buttons button {
-    width: 100%;
-    background-color: var(--button-bg-color);
-    color: var(--primary-text-color);
-    border: 1px solid var(--button-border-color);
-    border-radius: 5px;
-    padding: 5px var(--spacing-unit);
-    cursor: pointer;
-}
-
-#location-management-buttons button:hover {
-    background-color: var(--button-hover-bg-color);
-}
-
-body.light-mode #location-management-buttons button {
-    background-color: var(--light-secondary-bg-color);
-    color: var(--light-text-color);
-    border-color: var(--light-border-color);
-}
-
-body.light-mode #location-management-buttons button:hover {
-    background-color: #d0d0d0;
-}
-
 body.light-mode .content-panel {
     background-color: rgba(240, 240, 240, 0.85);
     color: var(--light-text-color);
 }
 
-body.light-mode .location-item {
-    background-color: var(--light-secondary-bg-color);
-    border-color: var(--light-border-color);
-}
-
-body.light-mode .location-item .controls button {
-    background-color: #d0d0d0;
-    color: var(--light-text-color);
-    border-color: #bbbbbb;
-}
-
-body.light-mode .location-item .controls button:hover {
-    background-color: #c0c0c0;
-}
-
-body.light-mode .location-item .controls button.remove {
-    background-color: var(--danger-light-bg-color);
-    border-color: var(--danger-light-border-color);
-    color: var(--danger-light-text-color);
-}
-
-body.light-mode .location-item .controls button.remove:hover {
-    background-color: #ffbbaa;
-}
-
-#map {
-    height: 100%;
-    width: 100%;
-}
-
+/*
+  ========================================
+  Leaflet Customization
+  ========================================
+*/
 .leaflet-tooltip {
     background-color: var(--tooltip-bg-color);
     color: var(--tooltip-text-color);
     border: 1px solid var(--tooltip-border-color);
     box-shadow: 0 1px 5px rgba(0,0,0,0.65);
     text-align: center;
+}
+
+.leaflet-tooltip-top:before {
+    border-top-color: var(--tooltip-bg-color);
 }
 
 body.light-mode .leaflet-tooltip {
@@ -132,11 +103,7 @@ body.light-mode .leaflet-tooltip-top:before {
     border-top-color: var(--light-secondary-bg-color);
 }
 
-.leaflet-tooltip-top:before {
-    border-top-color: var(--tooltip-bg-color);
-}
-
-/* Leaflet Zoom Controls Theming */
+/* Leaflet Zoom Controls */
 .leaflet-control-zoom a {
     background-color: var(--secondary-bg-color);
     color: var(--primary-text-color);
@@ -157,6 +124,87 @@ body.light-mode .leaflet-control-zoom a:hover {
     background-color: #d0d0d0;
 }
 
+/* Styles for disabled zoom buttons */
+.leaflet-control-zoom .leaflet-disabled {
+    background-color: var(--secondary-bg-color);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.leaflet-control-zoom .leaflet-disabled:hover {
+    background-color: var(--secondary-bg-color);
+}
+
+body.light-mode .leaflet-control-zoom .leaflet-disabled {
+    background-color: var(--light-secondary-bg-color);
+    opacity: 0.5;
+    border-color: var(--light-border-color);
+}
+
+body.light-mode .leaflet-control-zoom .leaflet-disabled:hover {
+    background-color: var(--light-secondary-bg-color);
+}
+
+/*
+  ========================================
+  UI Panels (Absolute Positioned)
+  ========================================
+*/
+.ui-container {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+#location-manager-container {
+    bottom: var(--spacing-unit);
+    left: var(--spacing-unit);
+    align-items: flex-start;
+}
+
+#placeholder-container {
+    bottom: var(--spacing-unit);
+    right: var(--spacing-unit);
+    align-items: flex-end;
+}
+
+#config-container {
+    top: var(--spacing-unit);
+    right: var(--spacing-unit);
+    align-items: flex-end;
+}
+
+/* Toggle buttons for UI panels */
+.ui-toggle, #location-list-toggle {
+    background-color: var(--secondary-bg-color);
+    color: var(--primary-text-color);
+    border: 1px solid var(--dark-border-color);
+    border-radius: 5px;
+    padding: 5px var(--spacing-unit);
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+/* Content area of UI panels */
+.content-panel, #location-list-content {
+    background-color: rgba(18, 18, 18, 0.85);
+    padding: var(--spacing-unit);
+    border-radius: 5px;
+    width: 250px;
+}
+
+#location-list-content {
+    width: 320px;
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
+/*
+  ========================================
+  Location Manager & List
+  ========================================
+*/
 #location-list-content h2 {
     margin: 10px 0;
     text-align: center;
@@ -206,35 +254,38 @@ body.light-mode .leaflet-control-zoom a:hover {
     border-radius: 5px;
 }
 
-#location-manager-container {
-    position: absolute;
-    bottom: var(--spacing-unit);
-    left: var(--spacing-unit);
-    z-index: 1000;
+#location-management-buttons {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    gap: var(--spacing-unit);
+    margin-top: 15px;
 }
 
-#location-list-toggle {
-    background-color: var(--secondary-bg-color);
+#location-management-buttons button {
+    width: 100%;
+    background-color: var(--button-bg-color);
     color: var(--primary-text-color);
-    border: 1px solid var(--dark-border-color);
+    border: 1px solid var(--button-border-color);
     border-radius: 5px;
     padding: 5px var(--spacing-unit);
     cursor: pointer;
-    margin-bottom: 5px;
 }
 
-#location-list-content {
-    width: 320px;
-    max-height: 40vh;
-    overflow-y: auto;
-    background-color: rgba(18, 18, 18, 0.85);
-    padding: var(--spacing-unit);
-    border-radius: 5px;
+#location-management-buttons button:hover {
+    background-color: var(--button-hover-bg-color);
 }
 
+body.light-mode #location-management-buttons button {
+    background-color: var(--light-secondary-bg-color);
+    color: var(--light-text-color);
+    border-color: var(--light-border-color);
+}
+
+body.light-mode #location-management-buttons button:hover {
+    background-color: #d0d0d0;
+}
+
+/* Individual location items in the list */
 #location-list {
     list-style: none;
     padding: 0;
@@ -257,6 +308,12 @@ body.light-mode .leaflet-control-zoom a:hover {
     margin-right: var(--spacing-unit);
 }
 
+.location-name-display[contenteditable="true"] {
+    border-bottom: 1px solid var(--button-border-color);
+    outline: none;
+}
+
+/* Controls within each location item (color, visibility, etc.) */
 .location-item .controls {
     position: static;
     background-color: transparent;
@@ -301,6 +358,32 @@ body.light-mode .leaflet-control-zoom a:hover {
     background-color: var(--button-hover-bg-color);
 }
 
+/* Light mode styles for location items */
+body.light-mode .location-item {
+    background-color: var(--light-secondary-bg-color);
+    border-color: var(--light-border-color);
+}
+
+body.light-mode .location-item .controls button {
+    background-color: #d0d0d0;
+    color: var(--light-text-color);
+    border-color: #bbbbbb;
+}
+
+body.light-mode .location-item .controls button:hover {
+    background-color: #c0c0c0;
+}
+
+body.light-mode .location-item .controls button.remove {
+    background-color: var(--danger-light-bg-color);
+    border-color: var(--danger-light-border-color);
+    color: var(--danger-light-text-color);
+}
+
+body.light-mode .location-item .controls button.remove:hover {
+    background-color: #ffbbaa;
+}
+
 body.light-mode .location-item .controls button.rename-location,
 body.light-mode .location-item .controls button.reset-label {
     background-color: #d0d0d0;
@@ -313,47 +396,11 @@ body.light-mode .location-item .controls button.reset-label:hover {
     background-color: #c0c0c0;
 }
 
-.location-name-display[contenteditable="true"] {
-    border-bottom: 1px solid var(--button-border-color);
-    outline: none;
-}
-
-.ui-container {
-    position: absolute;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-}
-
-#placeholder-container {
-    bottom: var(--spacing-unit);
-    right: var(--spacing-unit);
-    align-items: flex-end;
-}
-
-#config-container {
-    top: var(--spacing-unit);
-    right: var(--spacing-unit);
-    align-items: flex-end;
-}
-
-.ui-toggle {
-    background-color: var(--secondary-bg-color);
-    color: var(--primary-text-color);
-    border: 1px solid var(--dark-border-color);
-    border-radius: 5px;
-    padding: 5px var(--spacing-unit);
-    cursor: pointer;
-    margin-bottom: 5px;
-}
-
-.content-panel {
-    background-color: rgba(18, 18, 18, 0.85);
-    padding: var(--spacing-unit);
-    border-radius: 5px;
-    width: 250px;
-}
-
+/*
+  ========================================
+  Utility Classes
+  ========================================
+*/
 .hidden {
     display: none;
 }
