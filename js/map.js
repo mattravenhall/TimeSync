@@ -1,7 +1,7 @@
 const map = L.map('map', {
     maxBounds: [
-        [-90, -180],
-        [90, 180]
+        [-90, -200],
+        [90, 200]
     ],
     minZoom: 2
 }).setView([20, 0], 2);
