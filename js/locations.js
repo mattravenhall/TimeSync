@@ -14,7 +14,7 @@ const initialLocations = [
 
 let managedLocations = [];
 let nextLocationId = 0;
-let showCountryFlags = localStorage.getItem('showCountryFlags') === 'true'; // Load state from local storage
+let showCountryFlags = localStorage.getItem('showCountryFlags') !== 'false'; // Load state from local storage, defaulting to true
 
 function saveLocations() {
     localStorage.setItem('managedLocations', JSON.stringify(managedLocations.map(item => ({
