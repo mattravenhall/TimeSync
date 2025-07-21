@@ -59,6 +59,7 @@ function getTerminatorPoints(date) {
     const interval = 1; // degrees
 
     // Calculate points along the terminator line from -180 to 180 longitude
+    // TODO: Set this to something like -360, 360 to avoid hard stop at edges
     for (let i = -180; i <= 180; i += interval) {
         const lat = radToDeg(Math.atan(-Math.cos(degToRad(i + sunPos.longitude)) / Math.tan(degToRad(sunPos.latitude))));
         terminatorLine.push([lat, i]);
@@ -81,7 +82,7 @@ function getTerminatorPoints(date) {
     return nightPolygonPoints;
 }
 
-let daylightOverlay = L.polygon([], { color: '#000', weight: 1, fillColor: '#1a1a2e', fillOpacity: 0.8, interactive: false });
+let daylightOverlay = L.polygon([], { color: '#000', weight: 0, fillColor: '#1a1a2e', fillOpacity: 0.8, interactive: false });
 let isDaylightVisible = false;
 
 function updateDaylightOverlay() {
