@@ -59,6 +59,45 @@ async function toggleUserLocationInfo() {
 
 tzToggle.addEventListener('click', toggleUserLocationInfo);
 
+map.on('click', async (e) => {
+    if (!isPinDropMode) return;
+
+    const { lat, lng } = e.latlng;
+
+    try {
+        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+        const data = await response.json();
+
+        // Use the most specific location name available as a fallback
+        const locationName = data.city || data.locality || data.principalSubdivision || data.countryName;
+
+        if (locationName) {
+            const countryCode = data.countryCode;
+            const timezone = data.localityInfo.informative.find(i => i.description === 'time zone')?.ianaTimeId || 'Etc/GMT';
+            
+            if (confirm(`Add "${locationName}, ${countryCode}" to your locations?`)) {
+                const newLocation = {
+                    name: locationName,
+                    lat: lat,
+                    lng: lng,
+                    tz: timezone
+                };
+                addNewLocation(newLocation, colorInput.value, countryCode);
+                renderLocationList();
+                updateTimes();
+            }
+        } else {
+            alert('Could not find a location at these coordinates.');
+        }
+    } catch (error) {
+        console.error('Error during reverse geocoding:', error);
+        alert('An error occurred while finding the location.');
+    } finally {
+        // Always exit pin drop mode after a click
+        togglePinDropMode();
+    }
+});
+
 function initialize() {
     loadLocations();
     setInterval(updateTimes, 1000);

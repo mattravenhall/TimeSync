@@ -2,6 +2,24 @@ const cityInput = document.getElementById('city-input');
 const colorInput = document.getElementById('color-input');
 const addLocationBtn = document.getElementById('add-location-btn');
 const locationList = document.getElementById('location-list');
+const dropPinBtn = document.getElementById('drop-pin-btn');
+
+let isPinDropMode = false;
+
+function togglePinDropMode() {
+    isPinDropMode = !isPinDropMode;
+    const mapContainer = document.getElementById('map');
+    if (isPinDropMode) {
+        mapContainer.style.cursor = 'crosshair';
+        dropPinBtn.classList.add('active'); // Add active class for styling
+    } else {
+        mapContainer.style.cursor = '';
+        dropPinBtn.classList.remove('active');
+    }
+}
+
+dropPinBtn.addEventListener('click', togglePinDropMode);
+
 
 function renderLocationList() {
     locationList.innerHTML = '';
