@@ -58,9 +58,8 @@ function getTerminatorPoints(date) {
     const terminatorLine = [];
     const interval = 1; // degrees
 
-    // Calculate points along the terminator line from -180 to 180 longitude
-    // TODO: Set this to something like -360, 360 to avoid hard stop at edges
-    for (let i = -180; i <= 180; i += interval) {
+    // Calculate points along the terminator line from -1620 to 1620 longitude to cover 9 world maps
+    for (let i = -540; i <= 540; i += interval) {
         const lat = radToDeg(Math.atan(-Math.cos(degToRad(i + sunPos.longitude)) / Math.tan(degToRad(sunPos.latitude))));
         terminatorLine.push([lat, i]);
     }
@@ -69,11 +68,11 @@ function getTerminatorPoints(date) {
 
     // Determine which pole is in the night side and add points to close the polygon
     if (sunPos.latitude >= 0) { // Sun is in Northern Hemisphere or on equator, night extends to South Pole
-        nightPolygonPoints.push([-90, 180]); // South-east corner
-        nightPolygonPoints.push([-90, -180]); // South-west corner
+        nightPolygonPoints.push([-90, 540]); // South-east corner
+        nightPolygonPoints.push([-90, -540]); // South-west corner
     } else { // Sun is in Southern Hemisphere, night extends to North Pole
-        nightPolygonPoints.push([90, 180]); // North-east corner
-        nightPolygonPoints.push([90, -180]); // North-west corner
+        nightPolygonPoints.push([90, 540]); // North-east corner
+        nightPolygonPoints.push([90, -540]); // North-west corner
     }
 
     // Close the polygon by adding the first point again
