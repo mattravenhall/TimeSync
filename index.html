@@ -23,6 +23,10 @@
                 <button id="tz-toggle" title="Show/Hide Your Current Location">Show My Location</button>
             </div>
             <div id="location-management-buttons">
+                <div id="preset-container">
+                    <select id="preset-select"></select>
+                    <button id="load-preset-btn">Load Preset</button>
+                </div>
                 <button id="import-locations-btn" title="Import Locations File">Import</button>
                 <button id="export-locations-btn" title="Export Locations File">Export</button>
                 <input type="file" id="import-locations-input" accept=".json" style="display: none;">
@@ -62,6 +66,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js" defer></script>
+    <script src="js/presets.js" defer></script>
     <script src="js/daylight.js" defer></script>
     <script src="js/locations.js" defer></script>
     <script src="js/map.js" defer></script>

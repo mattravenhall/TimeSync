@@ -214,7 +214,7 @@ body.light-mode .leaflet-control-zoom .leaflet-disabled:hover {
 }
 
 #location-list-content {
-    width: 320px;
+    width: 380px;
     max-height: 40vh;
     overflow-y: auto;
 }

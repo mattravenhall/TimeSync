@@ -100,6 +100,7 @@ map.on('click', async (e) => {
 
 function initialize() {
     loadLocations();
+    populatePresetDropdown();
     setInterval(updateTimes, 1000);
 
     // Initialize daylight overlay and button text

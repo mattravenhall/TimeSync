@@ -63,16 +63,45 @@ function loadLocations() {
         renderLocationList();
         updateTimes();
     } else {
-        // If no saved locations, load initial ones
-        initialLocations.forEach(loc => {
-            addNewLocation(loc, loc.color, loc.countryCode);
-        });
-        renderLocationList();
-        updateTimes();
+        // If no saved locations, load the default preset
+        loadPreset('Global');
     }
     // Set initial button text based on loaded state
     document.getElementById('toggle-countries-btn').textContent = showCountryFlags ? '🗺️' : '🗺️';
 }
+
+function loadPreset(presetName) {
+    const preset = presets[presetName];
+    if (!preset) return;
+
+    if (managedLocations.length > 0) {
+        if (!confirm('Loading a preset will remove your custom markers. Are you sure?')) {
+            return;
+        }
+    }
+
+    // Clear existing locations
+    managedLocations.forEach(item => {
+        if (map.hasLayer(item.marker)) {
+            map.removeLayer(item.marker);
+        }
+    });
+    managedLocations = [];
+    nextLocationId = 0;
+
+    // Load preset locations
+    preset.locations.forEach(loc => {
+        addNewLocation(loc, loc.color, loc.countryCode);
+    });
+
+    // Set map view
+    map.setView(preset.center, preset.zoom);
+
+    renderLocationList();
+    updateTimes();
+    saveLocations();
+}
+
 
 function addNewLocation(location, color, countryCode) {
     const icon = L.divIcon({

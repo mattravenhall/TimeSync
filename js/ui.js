@@ -6,6 +6,25 @@ const dropPinBtn = document.getElementById('drop-pin-btn');
 
 let isPinDropMode = false;
 
+const presetSelect = document.getElementById('preset-select');
+const loadPresetBtn = document.getElementById('load-preset-btn');
+
+function populatePresetDropdown() {
+    for (const presetName in presets) {
+        const option = document.createElement('option');
+        option.value = presetName;
+        option.textContent = presetName;
+        presetSelect.appendChild(option);
+    }
+}
+
+loadPresetBtn.addEventListener('click', () => {
+    const selectedPreset = presetSelect.value;
+    if (selectedPreset) {
+        loadPreset(selectedPreset);
+    }
+});
+
 function togglePinDropMode() {
     isPinDropMode = !isPinDropMode;
     const mapContainer = document.getElementById('map');
