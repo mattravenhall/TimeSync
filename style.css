@@ -228,12 +228,14 @@ body.light-mode .leaflet-control-zoom .leaflet-disabled:hover {
     margin: 10px 0;
     text-align: center;
     font-size: 1.1em;
+    opacity: 0.3;
 }
 
 #config-content h2 {
     margin: 10px 0;
     text-align: center;
     font-size: 1.1em;
+    opacity: 0.3;
 }
 
 #location-controls {
@@ -435,4 +437,14 @@ body.light-mode .location-item .controls button.reset-label:hover {
     display: block;
     margin: auto;
     width: 100%;
+}
+
+a {
+  color: var(--primary-text-color);
+  opacity: 0.6;
+}
+
+a.light-mode {
+  color: var(--light-text-color);
+  opacity: 0.6;
 }
