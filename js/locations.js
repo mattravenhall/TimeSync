@@ -17,6 +17,7 @@ let nextLocationId = 0;
 let showCountryFlags = localStorage.getItem('showCountryFlags') !== 'false'; // Load state from local storage, defaulting to true
 
 function saveLocations() {
+    // Update localStorage with current managedLocations, nextLocationId, and showCountryFlags
     localStorage.setItem('managedLocations', JSON.stringify(managedLocations.map(item => ({
         id: item.id,
         location: { ...item.location, originalName: item.location.originalName || item.location.name }, // Ensure originalName is saved
@@ -28,6 +29,7 @@ function saveLocations() {
 }
 
 function loadLocations() {
+    // If locations are saved locally, load them to managedLocations, else load the default preset
     const savedLocations = localStorage.getItem('managedLocations');
     const savedNextLocationId = localStorage.getItem('nextLocationId');
 
@@ -55,6 +57,7 @@ function loadLocations() {
                 marker.addTo(map);
             }
 
+            // Populate managedLocations
             managedLocations.push({
                 id: item.id,
                 location: locationData,
@@ -66,19 +69,19 @@ function loadLocations() {
         });
         nextLocationId = savedNextLocationId ? parseInt(savedNextLocationId) : 0;
         renderLocationList();
-        updateTimes();
+        // updateTimes();
     } else {
         // If no saved locations, load the default preset
         loadPreset('Global');
     }
-    // Set initial button text based on loaded state
-    document.getElementById('toggle-countries-btn').textContent = showCountryFlags ? '🗺️' : '🗺️';
 }
 
 function loadPreset(presetName) {
+    // Switch to a preset group of locations
     const preset = presets[presetName];
     if (!preset) return;
 
+    // TODO: Possibly remove this if we end up saving custom sets
     if (managedLocations.length > 0) {
         if (!confirm('Loading a preset will remove your custom markers. Are you sure?')) {
             return;
@@ -103,12 +106,13 @@ function loadPreset(presetName) {
     map.setView(preset.center, preset.zoom);
 
     renderLocationList();
-    updateTimes();
+    // updateTimes();
     saveLocations();
 }
 
 
 async function addNewLocation(location, color, countryCode) {
+    // Create a new managedLocations item
     const icon = L.divIcon({
         className: 'custom-marker',
         html: `<div style="background-color: ${color}; width: 10px; height: 10px; border-radius: 50%;"></div>`,
@@ -125,7 +129,7 @@ async function addNewLocation(location, color, countryCode) {
 
     const newItem = {
         id: nextLocationId++,
-        location: { ...location, countryCode: countryCode, originalName: location.name }, // Store original name
+        location: { ...location, countryCode: countryCode, originalName: location.name },
         marker: marker,
         color: color,
         visible: true,
@@ -136,6 +140,7 @@ async function addNewLocation(location, color, countryCode) {
 }
 
 async function geocodeAndAddLocation() {
+    // Fetch metadata for the current cityInput.value, then add to managedLocations
     const cityName = cityInput.value;
     if (!cityName) return;
 
@@ -152,7 +157,7 @@ async function geocodeAndAddLocation() {
         };
         addNewLocation(newLocation, colorInput.value, result.country_code);
         renderLocationList();
-        updateTimes();
+        // updateTimes();
         cityInput.value = '';
     } else {
         alert('City not found!');
@@ -160,6 +165,7 @@ async function geocodeAndAddLocation() {
 }
 
 function exportLocations() {
+    // Export managedLocations to JSON
     const dataStr = JSON.stringify(managedLocations.map(item => ({
         location: item.location,
         color: item.color,
@@ -177,6 +183,7 @@ function exportLocations() {
 }
 
 function importLocations(event) {
+    // Load locations from a JSON
     const file = event.target.files[0];
     if (!file) return;
 
@@ -222,7 +229,7 @@ function importLocations(event) {
             }
             saveLocations();
             renderLocationList();
-            updateTimes();
+            // updateTimes();
             alert('Locations imported successfully!');
         } catch (error) {
             alert('Error importing locations: ' + error.message);

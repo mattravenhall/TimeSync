@@ -1,5 +1,6 @@
 function getWeatherEmoji(weatherCode) {
     const icons = {
+        999: '❓', // Fetch failed
         0: '☀️', // Clear sky
         1: '🌤️', // Mainly clear
         2: '⛅️', // Partly cloudy
@@ -33,28 +34,27 @@ function getWeatherEmoji(weatherCode) {
 }
 
 async function fetchWeather(lat, lon) {
+    // Get weather at a given location
     try {
         const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
         const data = await response.json();
         return data.current_weather.weathercode;
     } catch (error) {
-        console.error('Error fetching weather:', error);
-        return null;
+        // console.error('Error fetching weather:', error);
+        return 999;
     }
 }
 
 function updateTimes() {
+    // Update time and associated marker tooltips
     managedLocations.forEach(async (item) => {
         if (item.visible && map.hasLayer(item.marker)) {
             const time = moment().tz(item.location.tz).format('HH:mm:ss');
-            let weatherEmoji = '';
-            if (showWeather) {
-                if (!item.weatherCode) {
-                    item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
-                }
-                weatherEmoji = item.weatherCode !== null ? getWeatherEmoji(item.weatherCode) : '';
-            }
             const countryEmoji = showCountryFlags && item.location.countryCode ? countryCodeToEmoji(item.location.countryCode) : '';
+            if (showWeather && !item.weatherCode) {
+                item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
+            }
+            const weatherEmoji = showWeather && item.weatherCode ? getWeatherEmoji(item.weatherCode) : '';
             const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
             const tooltipContent = `<b>${item.location.name}</b><br>${time}${emojiLine ? `<br>${emojiLine}` : ''}`;
             item.marker.setTooltipContent(tooltipContent);
@@ -63,17 +63,34 @@ function updateTimes() {
     if (userLocationVisible && userMarker && map.hasLayer(userMarker)) {
         const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const time = moment().tz(userTz).format('HH:mm:ss');
-        let weatherEmoji = '';
-        if (showWeather && userMarker.weatherCode) {
-            weatherEmoji = getWeatherEmoji(userMarker.weatherCode);
-        }
         const countryEmoji = showCountryFlags && userMarker.countryCode ? countryCodeToEmoji(userMarker.countryCode) : '';
+        const weatherEmoji = showWeather && userMarker.weatherCode ? getWeatherEmoji(userMarker.weatherCode) : '';
         const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
         const tooltipContent = `<b>Your Location</b><br>${time}${emojiLine ? `<br>${emojiLine}` : ''}`;
         userMarker.setTooltipContent(tooltipContent);
     }
 }
 
+function updateWeather() {
+    // Update weather codes for all visible managedLocations
+    managedLocations.forEach(async (item) => {
+        if (item.visible && map.hasLayer(item.marker)) {
+            if (showWeather) {
+                if (!item.weatherCode) {
+                    item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
+                }
+            };
+        };
+    });
+    if (userLocationVisible && userMarker && map.hasLayer(userMarker)) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            userMarker.weatherCode = showWeather ? await fetchWeather(latitude, longitude) : null;
+        });
+    };
+}
+
+// User location information
 let userTimezoneLayer = null;
 let userMarker = null;
 const tzToggle = document.getElementById('tz-toggle');
@@ -139,6 +156,7 @@ async function toggleUserLocationInfo() {
 tzToggle.addEventListener('click', toggleUserLocationInfo);
 
 map.on('click', async (e) => {
+    // Implement adding new locations via pin mode
     if (!isPinDropMode) return;
 
     const { lat, lng } = e.latlng;
@@ -177,10 +195,12 @@ map.on('click', async (e) => {
     }
 });
 
+// Entrypoint
 function initialize() {
     loadLocations();
     populatePresetDropdown();
     setInterval(updateTimes, 1000);
+    setInterval(updateWeather, 60000);
 
     // Initialize daylight overlay and button text
     if (isDaylightVisible) {

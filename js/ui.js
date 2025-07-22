@@ -41,6 +41,7 @@ dropPinBtn.addEventListener('click', togglePinDropMode);
 
 
 function renderLocationList() {
+    // Updating locations list in Locations box
     locationList.innerHTML = '';
     managedLocations.forEach(item => {
         const listItem = document.createElement('li');
@@ -95,6 +96,7 @@ function renderLocationList() {
             }
         });
     }); // Closing brace for managedLocations.forEach
+    // console.warn("Rendering", managedLocations.length, "locations");
 }
 
 function changeMarkerColor(id, newColor) {
@@ -173,6 +175,7 @@ informationToggle.addEventListener('click', () => {
 
 locationListToggle.addEventListener('click', () => {
     locationListContent.classList.toggle('hidden');
+    renderLocationList();
 });
 
 const configToggle = document.getElementById('config-toggle');
@@ -242,7 +245,7 @@ resetLocationsBtn.addEventListener('click', () => {
         addNewLocation(loc, '#3388ff', loc.countryCode);
     });
     renderLocationList();
-    updateTimes();
+    // updateTimes();
     saveLocations(); // Save the reset state
 });
 
