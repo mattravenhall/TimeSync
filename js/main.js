@@ -1,14 +1,76 @@
+function getWeatherEmoji(weatherCode) {
+    const icons = {
+        0: '☀️', // Clear sky
+        1: '🌤️', // Mainly clear
+        2: '⛅️', // Partly cloudy
+        3: '☁️', // Overcast
+        45: '🌫️', // Fog
+        48: '🌫️', // Depositing rime fog
+        51: '🌦️', // Drizzle, light
+        53: '🌦️', // Drizzle, moderate
+        55: '🌦️', // Drizzle, dense
+        56: '🥶', // Freezing Drizzle, light
+        57: '🥶', // Freezing Drizzle, dense
+        61: '🌧️', // Rain, slight
+        63: '🌧️', // Rain, moderate
+        65: '🌧️', // Rain, heavy
+        66: '🥶', // Freezing Rain, light
+        67: '🥶', // Freezing Rain, heavy
+        71: '🌨️', // Snow fall, slight
+        73: '🌨️', // Snow fall, moderate
+        75: '🌨️', // Snow fall, heavy
+        77: '🌨️', // Snow grains
+        80: '🌧️', // Rain showers, slight
+        81: '🌧️', // Rain showers, moderate
+        82: '🌧️', // Rain showers, violent
+        85: '🌨️', // Snow showers, slight
+        86: '🌨️', // Snow showers, heavy
+        95: '⛈️', // Thunderstorm, slight or moderate
+        96: '⛈️', // Thunderstorm with slight hail
+        99: '⛈️', // Thunderstorm with heavy hail
+    };
+    return icons[weatherCode] || '❓';
+}
+
+async function fetchWeather(lat, lon) {
+    try {
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const data = await response.json();
+        return data.current_weather.weathercode;
+    } catch (error) {
+        console.error('Error fetching weather:', error);
+        return null;
+    }
+}
+
 function updateTimes() {
-    managedLocations.forEach(item => {
+    managedLocations.forEach(async (item) => {
         if (item.visible && map.hasLayer(item.marker)) {
             const time = moment().tz(item.location.tz).format('HH:mm:ss');
-            item.marker.setTooltipContent(`<b>${showCountryFlags ? countryCodeToEmoji(item.location.countryCode) : ''} ${item.location.name}</b><br>${time}`);
+            let weatherEmoji = '';
+            if (showWeather) {
+                if (!item.weatherCode) {
+                    item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
+                }
+                weatherEmoji = item.weatherCode !== null ? getWeatherEmoji(item.weatherCode) : '';
+            }
+            const countryEmoji = showCountryFlags && item.location.countryCode ? countryCodeToEmoji(item.location.countryCode) : '';
+            const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
+            const tooltipContent = `<b>${item.location.name}</b><br>${time}${emojiLine ? `<br>${emojiLine}` : ''}`;
+            item.marker.setTooltipContent(tooltipContent);
         }
     });
     if (userLocationVisible && userMarker && map.hasLayer(userMarker)) {
         const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const time = moment().tz(userTz).format('HH:mm:ss');
-        userMarker.setTooltipContent(`<b>Your Location</b><br>${time}`);
+        let weatherEmoji = '';
+        if (showWeather && userMarker.weatherCode) {
+            weatherEmoji = getWeatherEmoji(userMarker.weatherCode);
+        }
+        const countryEmoji = showCountryFlags && userMarker.countryCode ? countryCodeToEmoji(userMarker.countryCode) : '';
+        const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
+        const tooltipContent = `<b>Your Location</b><br>${time}${emojiLine ? `<br>${emojiLine}` : ''}`;
+        userMarker.setTooltipContent(tooltipContent);
     }
 }
 
@@ -23,8 +85,20 @@ async function toggleUserLocationInfo() {
     if (userLocationVisible) {
         if (!hasUserLocationBeenRequested) {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
+                navigator.geolocation.getCurrentPosition(async (position) => {
                     const { latitude, longitude } = position.coords;
+
+                    let userCountryCode = '';
+                    try {
+                        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+                        const data = await response.json();
+                        userCountryCode = data.countryCode || '';
+                    } catch (error) {
+                        console.error('Error fetching user country code:', error);
+                    }
+
+                    const weatherCode = showWeather ? await fetchWeather(latitude, longitude) : null;
+
                     userMarker = L.marker([latitude, longitude], {
                         icon: L.divIcon({
                             className: 'user-marker',
@@ -32,7 +106,12 @@ async function toggleUserLocationInfo() {
                             iconSize: [10, 10]
                         })
                     });
-                    userMarker.bindTooltip(`<b>Your Location</b><br>${moment().format('HH:mm:ss')}`, { permanent: true, direction: 'top' });
+                    userMarker.countryCode = userCountryCode; // Store for later
+                    userMarker.weatherCode = weatherCode;
+                    const weatherEmoji = showWeather && weatherCode !== null ? getWeatherEmoji(weatherCode) : '';
+                    const countryEmoji = showCountryFlags && userMarker.countryCode ? countryCodeToEmoji(userMarker.countryCode) : '';
+                    const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
+                    userMarker.bindTooltip(`<b>Your Location</b><br>${moment().format('HH:mm:ss')}${emojiLine ? `<br>${emojiLine}` : ''}`, { permanent: true, direction: 'top' });
                     userMarker.addTo(map);
                 });
             }

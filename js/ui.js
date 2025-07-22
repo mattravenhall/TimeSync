@@ -184,10 +184,13 @@ configToggle.addEventListener('click', () => {
 
 const daylightToggle = document.getElementById('daylight-toggle');
 const toggleCountriesBtn = document.getElementById('toggle-countries-btn');
+const toggleWeatherBtn = document.getElementById('toggle-weather-btn');
 const exportLocationsBtn = document.getElementById('export-locations-btn');
 const importLocationsBtn = document.getElementById('import-locations-btn');
 const importLocationsInput = document.getElementById('import-locations-input');
 const resetLocationsBtn = document.getElementById('reset-locations-btn');
+
+let showWeather = localStorage.getItem('showWeather') !== 'false';
 
 daylightToggle.addEventListener('click', () => {
     isDaylightVisible = !isDaylightVisible;
@@ -208,6 +211,13 @@ toggleCountriesBtn.addEventListener('click', () => {
     renderLocationList(); // Re-render list to update flags
     updateTimes(); // Update marker tooltips
 });
+
+toggleWeatherBtn.addEventListener('click', () => {
+    showWeather = !showWeather;
+    localStorage.setItem('showWeather', showWeather);
+    updateTimes();
+});
+
 
 exportLocationsBtn.addEventListener('click', exportLocations);
 

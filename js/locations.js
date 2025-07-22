@@ -34,7 +34,7 @@ function loadLocations() {
     if (savedLocations) {
         const parsedLocations = JSON.parse(savedLocations);
         managedLocations = []; // Clear existing locations
-        parsedLocations.forEach(item => {
+        parsedLocations.forEach(async (item) => {
             // Ensure originalName is set, defaulting to name if not present (for old saves)
             const locationData = { ...item.location, originalName: item.location.originalName || item.location.name };
 
@@ -45,7 +45,11 @@ function loadLocations() {
                 iconSize: [10, 10]
             });
             const marker = L.marker([locationData.lat, locationData.lng], { icon });
-            marker.bindTooltip(`<b>${showCountryFlags ? countryCodeToEmoji(locationData.countryCode) : ''} ${locationData.name}</b><br>...`, { permanent: true, direction: 'top' });
+            const weatherCode = showWeather ? await fetchWeather(locationData.lat, locationData.lng) : null;
+            const weatherEmoji = showWeather && weatherCode !== null ? getWeatherEmoji(weatherCode) : '';
+            const countryEmoji = showCountryFlags && locationData.countryCode ? countryCodeToEmoji(locationData.countryCode) : '';
+            const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
+            marker.bindTooltip(`<b>${locationData.name}</b><br>...${emojiLine ? `<br>${emojiLine}` : ''}`, { permanent: true, direction: 'top' });
             
             if (item.visible) {
                 marker.addTo(map);
@@ -56,7 +60,8 @@ function loadLocations() {
                 location: locationData,
                 marker: marker,
                 color: item.color,
-                visible: item.visible
+                visible: item.visible,
+                weatherCode: weatherCode
             });
         });
         nextLocationId = savedNextLocationId ? parseInt(savedNextLocationId) : 0;
@@ -103,7 +108,7 @@ function loadPreset(presetName) {
 }
 
 
-function addNewLocation(location, color, countryCode) {
+async function addNewLocation(location, color, countryCode) {
     const icon = L.divIcon({
         className: 'custom-marker',
         html: `<div style="background-color: ${color}; width: 10px; height: 10px; border-radius: 50%;"></div>`,
@@ -111,15 +116,20 @@ function addNewLocation(location, color, countryCode) {
     });
 
     const marker = L.marker([location.lat, location.lng], { icon }).addTo(map);
+    const weatherCode = showWeather ? await fetchWeather(location.lat, location.lng) : null;
+    const weatherEmoji = showWeather && weatherCode !== null ? getWeatherEmoji(weatherCode) : '';
+    const countryEmoji = showCountryFlags && countryCode ? countryCodeToEmoji(countryCode) : '';
+    const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
     
-    marker.bindTooltip(`<b>${showCountryFlags ? countryCodeToEmoji(countryCode) : ''} ${location.name}</b><br>...`, { permanent: true, direction: 'top' });
+    marker.bindTooltip(`<b>${location.name}</b><br>...${emojiLine ? `<br>${emojiLine}` : ''}`, { permanent: true, direction: 'top' });
 
     const newItem = {
         id: nextLocationId++,
         location: { ...location, countryCode: countryCode, originalName: location.name }, // Store original name
         marker: marker,
         color: color,
-        visible: true
+        visible: true,
+        weatherCode: weatherCode
     };
     managedLocations.push(newItem);
     saveLocations();
