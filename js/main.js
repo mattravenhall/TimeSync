@@ -69,7 +69,6 @@ function updateTimes() {
 }
 
 function updateWeather(patch_only = false) {
-    console.error("DEV updating weather");
     // Update weather codes for all visible managedLocations
     managedLocations.forEach(async (item) => {  // Markers
         if (item.visible && map.hasLayer(item.marker)) {
@@ -77,7 +76,7 @@ function updateWeather(patch_only = false) {
                 // If patching, only fetch if no weatherCode
                 if ((patch_only && (item.weatherCode !== null || item.weatherCode == 999)) || !patch_only) {
                     item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
-                    console.error("fetching for " + item.location.name + " at " + item.location.lat + ", " + item.location.lng + " found " + item.weatherCode);
+                    // console.error("fetching for " + item.location.name + " at " + item.location.lat + ", " + item.location.lng + " found " + item.weatherCode);
                 }
             }
         }
