@@ -96,7 +96,6 @@ function renderLocationList() {
             }
         });
     }); // Closing brace for managedLocations.forEach
-    // console.warn("Rendering", managedLocations.length, "locations");
 }
 
 function changeMarkerColor(id, newColor) {
@@ -240,12 +239,7 @@ resetLocationsBtn.addEventListener('click', () => {
     managedLocations = []; // Clear the array
     nextLocationId = 0; // Reset ID counter
 
-    // Add initial locations back
-    initialLocations.forEach(loc => {
-        addNewLocation(loc, '#3388ff', loc.countryCode);
-    });
-    renderLocationList();
-    // updateTimes();
+    loadPreset("Global");
     saveLocations(); // Save the reset state
 });
 

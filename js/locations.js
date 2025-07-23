@@ -1,17 +1,3 @@
-const initialLocations = [
-    { name: 'New York', originalName: 'New York', lat: 40.7128, lng: -74.0060, tz: 'America/New_York', countryCode: 'US', color: '#F7C343' },
-    { name: 'London', originalName: 'London', lat: 51.5074, lng: -0.1278, tz: 'Europe/London', countryCode: 'GB', color: '#D84848' },
-    { name: 'Tokyo', originalName: 'Tokyo', lat: 35.6895, lng: 139.6917, tz: 'Asia/Tokyo', countryCode: 'JP', color: '#6A4C9C' },
-    { name: 'Sydney', originalName: 'Sydney', lat: -33.8688, lng: 151.2093, tz: 'Australia/Sydney', countryCode: 'AU', color: '#44D7B6' },
-    { name: 'Beijing', originalName: 'Beijing', lat: 39.9042, lng: 116.4074, tz: 'Asia/Shanghai', countryCode: 'CN', color: '#D84848' },
-    { name: 'Moscow', originalName: 'Moscow', lat: 55.7558, lng: 37.6173, tz: 'Europe/Moscow', countryCode: 'RU', color: '#D84848' },
-    { name: 'Cairo', originalName: 'Cairo', lat: 30.0444, lng: 31.2357, tz: 'Africa/Cairo', countryCode: 'EG', color: '#F7C343' },
-    { name: 'Rio de Janeiro', originalName: 'Rio de Janeiro', lat: -22.9068, lng: -43.1729, tz: 'America/Sao_Paulo', countryCode: 'BR', color: '#52D744' },
-    { name: 'Los Angeles', originalName: 'Los Angeles', lat: 34.0523, lng: -118.2437, tz: 'America/Los_Angeles', countryCode: 'US', color: '#F7C343' },
-    { name: 'Cape Town', originalName: 'Cape Town', lat: -33.9258, lng: 18.4232, tz: 'Africa/Johannesburg', countryCode: 'ZA', color: '#52D744' },
-    { name: 'New Delhi', originalName: 'New Delhi', lat: 28.6214, lng: 77.2148, tz: 'Asia/Kolkata', countryCode: 'IN', color: '#F78843' },
-];
-
 let managedLocations = [];
 let nextLocationId = 0;
 let showCountryFlags = localStorage.getItem('showCountryFlags') !== 'false'; // Load state from local storage, defaulting to true
@@ -26,6 +12,7 @@ function saveLocations() {
     }))));
     localStorage.setItem('nextLocationId', nextLocationId);
     localStorage.setItem('showCountryFlags', showCountryFlags);
+    renderLocationList();
 }
 
 function loadLocations() {
@@ -107,7 +94,7 @@ function loadPreset(presetName) {
 
     renderLocationList();
     // updateTimes();
-    saveLocations();
+    // saveLocations();
 }
 
 
@@ -228,7 +215,7 @@ function importLocations(event) {
                 }
             }
             saveLocations();
-            renderLocationList();
+            // renderLocationList();
             // updateTimes();
             alert('Locations imported successfully!');
         } catch (error) {
