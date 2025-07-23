@@ -51,10 +51,7 @@ function updateTimes() {
         if (item.visible && map.hasLayer(item.marker)) {
             const time = moment().tz(item.location.tz).format('HH:mm:ss');
             const countryEmoji = showCountryFlags && item.location.countryCode ? countryCodeToEmoji(item.location.countryCode) : '';
-            if (showWeather && !item.weatherCode) {
-                item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
-            }
-            const weatherEmoji = showWeather && item.weatherCode ? getWeatherEmoji(item.weatherCode) : '';
+            const weatherEmoji = showWeather && item.weatherCode !== null ? getWeatherEmoji(item.weatherCode) : '';
             const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
             const tooltipContent = `<b>${item.location.name}</b><br>${time}${emojiLine ? `<br>${emojiLine}` : ''}`;
             item.marker.setTooltipContent(tooltipContent);
@@ -71,18 +68,21 @@ function updateTimes() {
     }
 }
 
-function updateWeather() {
+function updateWeather(patch_only = false) {
+    console.error("DEV updating weather");
     // Update weather codes for all visible managedLocations
-    managedLocations.forEach(async (item) => {
+    managedLocations.forEach(async (item) => {  // Markers
         if (item.visible && map.hasLayer(item.marker)) {
             if (showWeather) {
-                if (!item.weatherCode) {
+                // If patching, only fetch if no weatherCode
+                if ((patch_only && (item.weatherCode !== null || item.weatherCode == 999)) || !patch_only) {
                     item.weatherCode = await fetchWeather(item.location.lat, item.location.lng);
+                    console.error("fetching for " + item.location.name + " at " + item.location.lat + ", " + item.location.lng + " found " + item.weatherCode);
                 }
-            };
-        };
+            }
+        }
     });
-    if (userLocationVisible && userMarker && map.hasLayer(userMarker)) {
+    if (userLocationVisible && userMarker && map.hasLayer(userMarker)) {  // User marker
         navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
             userMarker.weatherCode = showWeather ? await fetchWeather(latitude, longitude) : null;
@@ -199,8 +199,10 @@ map.on('click', async (e) => {
 function initialize() {
     loadLocations();
     populatePresetDropdown();
-    setInterval(updateTimes, 1000);
-    setInterval(updateWeather, 60000);
+    setInterval(updateTimes, 1000);  // Update times every second
+    setInterval(updateWeather, 900000);  // Update weather every 15 minutest
+    setInterval(updateWeather, 5000, true);  // Patch updates (so markers without a weather code) every 5 minutes
+    // setInterval(updateWeather, 300000, true);  // Patch updates (so markers without a weather code) every 5 minutes
 
     // Initialize daylight overlay and button text
     if (isDaylightVisible) {
