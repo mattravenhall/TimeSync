@@ -169,7 +169,7 @@ map.on('click', async (e) => {
 
         if (locationName) {
             const countryCode = data.countryCode;
-            const timezone = data.localityInfo.informative.find(i => i.description === 'time zone')?.ianaTimeId || 'Etc/GMT';
+            const timezone = data.localityInfo.informative.find(i => i.description === 'time zone')?.name || '';
             
             if (confirm(`Add "${locationName}, ${countryCode}" to your locations?`)) {
                 const newLocation = {
