@@ -97,7 +97,6 @@ function loadPreset(presetName) {
     // saveLocations();
 }
 
-
 async function addNewLocation(location, color, countryCode) {
     // Create a new managedLocations item
     const icon = L.divIcon({

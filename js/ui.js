@@ -209,7 +209,6 @@ daylightToggle.addEventListener('click', () => {
 toggleCountriesBtn.addEventListener('click', () => {
     showCountryFlags = !showCountryFlags;
     localStorage.setItem('showCountryFlags', showCountryFlags);
-    toggleCountriesBtn.textContent = showCountryFlags ? '🗺️' : '🗺️';
     renderLocationList(); // Re-render list to update flags
     updateTimes(); // Update marker tooltips
 });

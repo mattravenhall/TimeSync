@@ -45,6 +45,74 @@ async function fetchWeather(lat, lon) {
     }
 }
 
+// User location information
+let userTimezoneLayer = null;
+let userMarker = null;
+const userToggle = document.getElementById('user-toggle');
+let userLocationVisible = false;
+let hasUserLocationBeenRequested = false;
+
+async function toggleUserLocationInfo() {
+    userLocationVisible = !userLocationVisible;
+    if (userLocationVisible) {
+        userToggle.innerHTML = "Hide My Location"
+        if (!hasUserLocationBeenRequested) {
+            hasUserLocationBeenRequested = true;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const { latitude, longitude } = position.coords;
+
+                    let userCountryCode = '';
+                    try {
+                        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+                        const data = await response.json();
+                        userCountryCode = data.countryCode || '';
+                    } catch (error) {
+                        console.error('Error fetching user country code:', error);
+                    }
+
+                    const weatherCode = showWeather ? await fetchWeather(latitude, longitude) : null;
+
+                    userMarker = L.marker([latitude, longitude], {
+                        icon: L.divIcon({
+                            className: 'user-marker',
+                            html: `<div style="background-color: red; width: 10px; height: 10px; border-radius: 50%;"></div>`,
+                            iconSize: [10, 10]
+                        })
+                    });
+                    userMarker.countryCode = userCountryCode; // Store for later
+                    userMarker.weatherCode = weatherCode;
+                    const weatherEmoji = showWeather && weatherCode !== null ? getWeatherEmoji(weatherCode) : '';
+                    const countryEmoji = showCountryFlags && userMarker.countryCode ? countryCodeToEmoji(userMarker.countryCode) : '';
+                    const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
+                    userMarker.bindTooltip(`<b>Your Location</b><br>${moment().format('HH:mm:ss')}${emojiLine ? `<br>${emojiLine}` : ''}`, { permanent: true, direction: 'top' });
+                    userMarker.addTo(map);
+                });
+            }
+        } else if (userMarker) {
+            userMarker.addTo(map);
+        }
+
+        if (!userTimezoneLayer) {
+            const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const response = await fetch('https://raw.githubusercontent.com/evansiroky/timezone-boundary-builder/main/dist/timezones.geojson');
+            const timezones = await response.json();
+            const userTimezone = timezones.features.find(feature => feature.properties.tzid === userTz);
+            if (userTimezone) {
+                userTimezoneLayer = L.geoJSON(userTimezone, { style: { color: 'red', weight: 2, fill: false } });
+            }
+        }
+        if (userTimezoneLayer) userTimezoneLayer.addTo(map);
+    } else {
+        userToggle.innerHTML = "Show My Location"
+        if (userMarker && map.hasLayer(userMarker)) map.removeLayer(userMarker);
+        if (userTimezoneLayer && map.hasLayer(userTimezoneLayer)) map.removeLayer(userTimezoneLayer);
+    }
+}
+
+userToggle.addEventListener('click', toggleUserLocationInfo);
+
+// Update functions
 function updateTimes() {
     // Update time and associated marker tooltips
     managedLocations.forEach(async (item) => {
@@ -82,77 +150,9 @@ function updateWeather(patch_only = false) {
         }
     });
     if (userLocationVisible && userMarker && map.hasLayer(userMarker)) {  // User marker
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
-            userMarker.weatherCode = showWeather ? await fetchWeather(latitude, longitude) : null;
-        });
+        userMarker.weatherCode = showWeather ? fetchWeather(userMarker.location.lat, userMarker.location.lng) : null;
     };
 }
-
-// User location information
-let userTimezoneLayer = null;
-let userMarker = null;
-const tzToggle = document.getElementById('tz-toggle');
-let userLocationVisible = false;
-let hasUserLocationBeenRequested = false;
-
-async function toggleUserLocationInfo() {
-    userLocationVisible = !userLocationVisible;
-    if (userLocationVisible) {
-        if (!hasUserLocationBeenRequested) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const { latitude, longitude } = position.coords;
-
-                    let userCountryCode = '';
-                    try {
-                        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-                        const data = await response.json();
-                        userCountryCode = data.countryCode || '';
-                    } catch (error) {
-                        console.error('Error fetching user country code:', error);
-                    }
-
-                    const weatherCode = showWeather ? await fetchWeather(latitude, longitude) : null;
-
-                    userMarker = L.marker([latitude, longitude], {
-                        icon: L.divIcon({
-                            className: 'user-marker',
-                            html: `<div style="background-color: red; width: 10px; height: 10px; border-radius: 50%;"></div>`,
-                            iconSize: [10, 10]
-                        })
-                    });
-                    userMarker.countryCode = userCountryCode; // Store for later
-                    userMarker.weatherCode = weatherCode;
-                    const weatherEmoji = showWeather && weatherCode !== null ? getWeatherEmoji(weatherCode) : '';
-                    const countryEmoji = showCountryFlags && userMarker.countryCode ? countryCodeToEmoji(userMarker.countryCode) : '';
-                    const emojiLine = [countryEmoji, weatherEmoji].filter(Boolean).join(' ');
-                    userMarker.bindTooltip(`<b>Your Location</b><br>${moment().format('HH:mm:ss')}${emojiLine ? `<br>${emojiLine}` : ''}`, { permanent: true, direction: 'top' });
-                    userMarker.addTo(map);
-                });
-            }
-            hasUserLocationBeenRequested = true;
-        } else if (userMarker) {
-            userMarker.addTo(map);
-        }
-
-        if (!userTimezoneLayer) {
-            const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const response = await fetch('https://raw.githubusercontent.com/evansiroky/timezone-boundary-builder/main/dist/timezones.geojson');
-            const timezones = await response.json();
-            const userTimezone = timezones.features.find(feature => feature.properties.tzid === userTz);
-            if (userTimezone) {
-                userTimezoneLayer = L.geoJSON(userTimezone, { style: { color: 'red', weight: 2, fill: false } });
-            }
-        }
-        if (userTimezoneLayer) userTimezoneLayer.addTo(map);
-    } else {
-        if (userMarker && map.hasLayer(userMarker)) map.removeLayer(userMarker);
-        if (userTimezoneLayer && map.hasLayer(userTimezoneLayer)) map.removeLayer(userTimezoneLayer);
-    }
-}
-
-tzToggle.addEventListener('click', toggleUserLocationInfo);
 
 map.on('click', async (e) => {
     // Implement adding new locations via pin mode
@@ -207,9 +207,6 @@ function initialize() {
     if (isDaylightVisible) {
         updateDaylightOverlay();
         daylightOverlay.addTo(map);
-        daylightToggle.innerHTML = '🌙';
-    } else {
-        daylightToggle.innerHTML = '☀️';
     }
 }
 
