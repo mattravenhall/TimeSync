@@ -6,11 +6,12 @@
 [**View Now**](https://mattravenhall.github.io/TimeSync/)
 
 ## Features ✨
-- 📍 Add/remove/hide locations
-- 🎨 Customise marker visuals
-- 💾 Import/export locations
+- 📍 Add/remove/hide your locations
+- ⛅ View local weather
+- 🎨 Customise your markers
+- 💾 Import/export your pins
 - 🌗 Dark/Light mode
 - ☀️ Show/hide daylight
 
 ## Dev Note 🧑‍💻
-This was initially vibe-coded in a couple hours because I couldn't find a minimalist customisable time zone map. Since then I've been gradually adding new features the old-fashioned way.
+This was initially vibe-coded in a couple hours because I couldn't find a minimalist customisable time zone map. Since then I've been gradually adding new features the old-fashioned way. Read the [associated blog for more info](https://mattravenhall.github.io/2025/07/24/TimeSync-custom-clocks.html).
